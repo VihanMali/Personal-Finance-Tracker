@@ -1,0 +1,125 @@
+import java.util.Scanner;
+
+abstract class Incomer {
+    abstract void showLimits();
+    abstract void dailyExpenseEntry(Scanner sc);
+}
+
+class MonthlyIncomer extends Incomer {
+
+    int monthlyIncome;
+    double emergencyFund;
+    double investment;
+    double spendingLimit;
+    double totalExpenses = 0;
+
+    MonthlyIncomer(int monthlyIncome) {
+        this.monthlyIncome = monthlyIncome;
+
+        emergencyFund = monthlyIncome * 0.20;
+        investment = monthlyIncome * 0.35;
+        spendingLimit = monthlyIncome * 0.45;
+    }
+
+    @Override
+    void showLimits() {
+        System.out.println("\n--- MONTHLY FINANCIAL PLAN ---");
+        System.out.println("Monthly Income : " + monthlyIncome);
+        System.out.println("Emergency Fund : " + emergencyFund);
+        System.out.println("Spending Limit : " + spendingLimit);
+
+        System.out.println("\n--- INVESTMENTS ---");
+        System.out.println("SIP : " + investment * 0.50);
+        System.out.println("Gold / FD : " + investment * 0.20);
+        System.out.println("Stocks : " + investment * 0.30);
+    }
+
+    @Override
+    void dailyExpenseEntry(Scanner sc) {
+        System.out.print("Enter today's expense: ");
+        double expense = sc.nextDouble();
+        totalExpenses += expense;
+
+        double remaining = spendingLimit - totalExpenses;
+
+        System.out.println("Total Monthly Expenses : " + totalExpenses);
+        System.out.println("Remaining Monthly Balance : " + remaining);
+
+        if (remaining < 0) {
+            System.out.println("⚠️ Warning: You exceeded your monthly spending limit!");
+        }
+    }
+}
+
+class DailyIncomer extends Incomer {
+
+    int dailyIncome;
+    double emergency;
+    double investment;
+    double spending;
+
+    DailyIncomer(int dailyIncome) {
+        this.dailyIncome = dailyIncome;
+
+        emergency = dailyIncome * 0.20;
+        investment = dailyIncome * 0.35;
+        spending = dailyIncome * 0.45;
+    }
+
+    @Override
+    void showLimits() {
+        System.out.println("\n--- DAILY FINANCIAL PLAN ---");
+        System.out.println("Daily Income : " + dailyIncome);
+        System.out.println("Emergency Fund : " + emergency);
+        System.out.println("Spending Limit : " + spending);
+        System.out.println("Investment : " + investment);
+    }
+
+    @Override
+    void dailyExpenseEntry(Scanner sc) {
+        System.out.print("Enter today's expense: ");
+        double expense = sc.nextDouble();
+
+        double balance = spending - expense;
+
+        System.out.println("Remaining Daily Balance : " + balance);
+
+        if (balance < 0) {
+            System.out.println("⚠️ Warning: You overspent today!");
+        }
+    }
+}
+
+public class vihan {
+
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+
+        System.out.print("Enter income type (daily / monthly): ");
+        String type = sc.next();
+
+        Incomer user;
+
+        if (type.equalsIgnoreCase("monthly")) {
+            System.out.print("Enter monthly income: ");
+            int income = sc.nextInt();
+            user = new MonthlyIncomer(income);
+        } else {
+            System.out.print("Enter daily income: ");
+            int income = sc.nextInt();
+            user = new DailyIncomer(income);
+        }
+
+        user.showLimits();
+
+        System.out.println("\n--- START DAILY TRACKING ---");
+
+        for (int day = 1; day <= 30; day++) {
+            System.out.println("\nDAY " + day);
+            user.dailyExpenseEntry(sc);
+        }
+
+        System.out.println("\n 30-Day Tracking Completed");
+    }
+}
